@@ -3,8 +3,9 @@
 字幕ファイルからテキスト部分のみを抽出するCLIスクリプト。
 
 対応形式
-- ASS
-- SRT
+
+* ASS
+* SRT
 
 ## 使い方
 
@@ -15,8 +16,7 @@ go run . [オプション] <字幕ファイル...>
 go run . anime01.ass
 
 # 複数ファイル（出力先フォルダ指定）
-go run . *.ass -o ./extracted
-go run . ep01.srt ep02.srt ep03.srt -o ./extracted
+go run . *.srt -o ./extracted
 ```
 
 単一ファイルを指定した場合は、クリップボードに、LLMに渡すためのプロンプト込みで出力されます。
@@ -36,7 +36,7 @@ go test -v
 go run . # エラー(ヘルプ)
 go run . ./samples/sample1-in.ass # 標準出力 + クリップボード出力
 go run . ./samples/sample1-in.ass -o extracted # 単一ファイルのフォルダ出力
-go run . ./samples/sample1-in.ass ./samples/sample2-in.srt -o extracted # 単一ファイルのフォルダ出力
+go run . ./samples/sample1-in.ass ./samples/sample2-in.srt -o extracted # 複数ファイルのフォルダ出力
 ```
 
 ## 開発
@@ -47,7 +47,12 @@ go run . ./samples/sample1-in.ass ./samples/sample2-in.srt -o extracted # 単一
 
 Claude Code の Skills 機能を使って、字幕ファイルのストーリーを説明させることができます。
 
-> `/extracted` 内の字幕ストーリーを説明して、 `/explained` に出力して
+```
+/explaining-story
+```
+
+* 入力フォルダ: `/extracted`
+* 出力フォルダ: `/explained`
 
 ## サブコマンド
 

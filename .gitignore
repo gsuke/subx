@@ -1,4 +1,3 @@
-node_modules/
 extracted/
 explained/
 
@@ -6,3 +5,7 @@ explained/
 *.srt
 !samples/*.ass
 !samples/*.srt
+
+# bun
+node_modules/
+bun.lock

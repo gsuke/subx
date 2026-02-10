@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+var markdownHeader = "## "
+
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, "Usage: concat <file1> <file2> ...")
@@ -31,7 +33,7 @@ func main() {
 		if i > 0 {
 			fmt.Println()
 		}
-		fmt.Printf("### %s\n\n", nameWithoutExt)
+		fmt.Printf("%s%s\n\n", markdownHeader, nameWithoutExt)
 		fmt.Print(string(content))
 	}
 }
