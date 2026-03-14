@@ -1,4 +1,4 @@
-# Subtitles Extractor
+# subx - SUBtitles eXtractor
 
 字幕ファイルからテキスト部分のみを抽出するCLIスクリプト。
 
@@ -7,16 +7,22 @@
 * ASS
 * SRT
 
+## インストール
+
+```
+go install github.com/gsuke/subx@latest
+```
+
 ## 使い方
 
 ```shell
-go run . [オプション] <字幕ファイル...>
+subx [オプション] <字幕ファイル...>
 
 # 単一ファイル（標準出力 + クリップボード出力）
-go run . anime01.ass
+subx . anime01.ass
 
 # 複数ファイル（出力先フォルダ指定）
-go run . *.srt -o ./extracted
+subx . *.srt -o ./extracted
 ```
 
 単一ファイルを指定した場合は、クリップボードに、LLMに渡すためのプロンプト込みで出力されます。

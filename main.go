@@ -106,17 +106,17 @@ func getOutputPath(inputFile, outputDir string) string {
 
 func printHelp() {
 	help := `使い方:
-  go run . [オプション] <字幕ファイル...>
+  subx . [オプション] <字幕ファイル...>
 
 オプション:
 %s
 例:
   # 単一ファイル（標準出力 + クリップボード出力）
-  go run . anime01.ass
+  subx . anime01.ass
 
   # 複数ファイル（出力先フォルダ指定）
-  go run . *.ass -o ./extracted
-  go run . ep01.srt ep02.srt ep03.srt -o ./extracted
+  subx . *.ass -o ./extracted
+  subx . ep01.srt ep02.srt ep03.srt -o ./extracted
 
 説明:
   字幕ファイル（ASS/SRT形式）からテキスト部分のみを抽出します。
