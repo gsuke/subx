@@ -93,6 +93,18 @@ func TestDetectAndExtract(t *testing.T) {
 			want:    "",
 			wantErr: true,
 		},
+		{
+			name:    "連続重複_SRT",
+			content: "1\n00:00:01,000 --> 00:00:02,000\nテスト\n\n2\n00:00:02,000 --> 00:00:03,000\nテスト\n",
+			want:    "テスト",
+			wantErr: false,
+		},
+		{
+			name:    "連続重複_ASS",
+			content: "[Script Info]\n[Events]\nDialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,テスト\nDialogue: 0,0:00:02.00,0:00:04.00,Default,,0,0,0,,テスト\nDialogue: 0,0:00:04.00,0:00:06.00,Default,,0,0,0,,mage",
+			want:    "テスト\nmage",
+			wantErr: false,
+		},
 	}
 
 	for _, tt := range tests {
@@ -104,6 +116,54 @@ func TestDetectAndExtract(t *testing.T) {
 			}
 			if got != tt.want {
 				t.Errorf("DetectAndExtract() = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDeduplicateLines(t *testing.T) {
+	tests := []struct {
+		name  string
+		lines []string
+		want  string
+	}{
+		{
+			name:  "重複なし",
+			lines: []string{"a", "b", "c"},
+			want:  "a\nb\nc",
+		},
+		{
+			name:  "連続重複",
+			lines: []string{"a", "a", "b", "b", "b", "c"},
+			want:  "a\nb\nc",
+		},
+		{
+			name:  "すべて同一",
+			lines: []string{"x", "x", "x"},
+			want:  "x",
+		},
+		{
+			name:  "空スライス",
+			lines: []string{},
+			want:  "",
+		},
+		{
+			name:  "単一要素",
+			lines: []string{"only"},
+			want:  "only",
+		},
+		{
+			name:  "非連続重複は除去しない",
+			lines: []string{"a", "b", "a"},
+			want:  "a\nb\na",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := deduplicateLines(tt.lines)
+			if got != tt.want {
+				t.Errorf("deduplicateLines() = %q, want %q", got, tt.want)
 			}
 		})
 	}

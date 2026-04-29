@@ -15,7 +15,7 @@ func (e *ASSExtractor) CanExtract(content string) bool {
 }
 
 // ASS形式の字幕からテキストを抽出する
-func (e *ASSExtractor) Extract(content string) (string, error) {
+func (e *ASSExtractor) Extract(content string) ([]string, error) {
 	lines := strings.Split(content, "\n")
 
 	var textParts []string
@@ -28,7 +28,7 @@ func (e *ASSExtractor) Extract(content string) (string, error) {
 		}
 	}
 
-	return strings.Join(textParts, "\n"), nil
+	return textParts, nil
 }
 
 // Dialogue行からテキスト部分(Text列)を抽出する

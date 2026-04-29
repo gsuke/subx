@@ -16,7 +16,7 @@ func (e *SRTExtractor) CanExtract(content string) bool {
 }
 
 // SRT形式の字幕からテキストを抽出する
-func (e *SRTExtractor) Extract(content string) (string, error) {
+func (e *SRTExtractor) Extract(content string) ([]string, error) {
 	lines := strings.Split(content, "\n")
 	timestampPattern := regexp.MustCompile(`^\d+:\d{2}:\d{2},\d{3}\s*-->\s*\d+:\d{2}:\d{2},\d{3}$`)
 	sequencePattern := regexp.MustCompile(`^\d+$`)
@@ -37,5 +37,5 @@ func (e *SRTExtractor) Extract(content string) (string, error) {
 		textParts = append(textParts, line)
 	}
 
-	return strings.Join(textParts, "\n"), nil
+	return textParts, nil
 }

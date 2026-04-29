@@ -60,37 +60,37 @@ func TestSRTExtractor_Extract(t *testing.T) {
 	tests := []struct {
 		name    string
 		content string
-		want    string
+		want    []string
 	}{
 		{
 			name:    "通常のSRT",
 			content: "1\n00:00:01,000 --> 00:00:02,000\nテスト字幕\n",
-			want:    "テスト字幕",
+			want:    []string{"テスト字幕"},
 		},
 		{
 			name:    "空の字幕ブロック",
 			content: "1\n00:00:01,000 --> 00:00:02,000\n\n",
-			want:    "",
+			want:    nil, // 空行はスキップされる
 		},
 		{
 			name:    "シーケンス番号のみ",
 			content: "1\n",
-			want:    "",
+			want:    nil,
 		},
 		{
 			name:    "ASSタグ混入",
 			content: "1\n00:00:01,000 --> 00:00:02,000\n{\\pos(100,200)}テスト\\N二行目\n",
-			want:    "テスト\\N二行目",
+			want:    []string{"テスト\\N二行目"},
 		},
 		{
 			name:    "複数ブロック",
 			content: "1\n00:00:01,000 --> 00:00:02,000\n一行目\n\n2\n00:00:02,000 --> 00:00:03,000\n二行目\n",
-			want:    "一行目\n二行目",
+			want:    []string{"一行目", "二行目"},
 		},
 		{
 			name:    "テキスト中の数字のみ行は無視_SRT形式として不正",
 			content: "1\n00:00:01,000 --> 00:00:02,000\n12345\n",
-			want:    "",
+			want:    nil,
 		},
 	}
 
@@ -100,8 +100,8 @@ func TestSRTExtractor_Extract(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Extract() error = %v", err)
 			}
-			if got != tt.want {
-				t.Errorf("Extract() = %q, want %q", got, tt.want)
+			if !equalStringSlice(got, tt.want) {
+				t.Errorf("Extract() = %v, want %v", got, tt.want)
 			}
 		})
 	}
