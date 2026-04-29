@@ -16,30 +16,31 @@ go install github.com/gsuke/subx@latest
 ## 使い方
 
 ```shell
-subx [オプション] <字幕ファイル...>
-
 # 単一ファイル
-subx . anime01.ass
+subx anime01.ass
 
 # 複数ファイル（出力先フォルダ指定）
-subx . *.srt -o ./extracted
+subx *.srt -o ./extracted
 ```
 
-## サンプルデータ
+## サンプルデータ & テストケース
 
 `/samples` を参照。
 
 ## テスト
 
-```shell
-# 自動テスト
-go test -v
+自動テスト
 
-# 手動テスト
+```shell
+go test -v
+```
+
+手動テスト
+
+```shell
 go run . # エラー(ヘルプ)
-go run . ./samples/sample1-in.ass
-go run . ./samples/sample1-in.ass -o extracted # 単一ファイルのフォルダ出力
-go run . ./samples/sample1-in.ass ./samples/sample2-in.srt -o extracted # 複数ファイルのフォルダ出力
+go run . ./samples/sample1-in.ass # 単一ファイル
+go run . ./samples/*-in.* -o extracted # 複数ファイル
 ```
 
 ## 開発

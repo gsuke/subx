@@ -90,23 +90,21 @@ func getOutputPath(inputFile, outputDir string) string {
 }
 
 func printHelp() {
-	help := `使い方:
-  subx . [オプション] <字幕ファイル...>
+	fmt.Print(`subx - SUBtitles eXtractor
 
-オプション:
-%s
-例:
-  # 単一ファイル
-  subx . anime01.ass
+Usage:
+  subx <file>
+  subx <files...> -o <dir>
 
-  # 複数ファイル（出力先フォルダ指定）
-  subx . *.ass -o ./extracted
-  subx . ep01.srt ep02.srt ep03.srt -o ./extracted
+Examples:
+  subx anime01.ass
+  subx *.srt -o ./extracted
 
-説明:
-  字幕ファイル（ASS/SRT形式）からテキスト部分のみを抽出します。
-  メタデータ（ASSの\posなど）は除去され、純粋なテキストが出力されます。
-`
+Supported formats:
+  ASS, SRT
 
-	fmt.Printf(help, flag.CommandLine.FlagUsages())
+Description:
+  字幕ファイルからテキスト部分のみを抽出します。
+  メタデータやASSタグを除去し、純粋なテキストを出力します。
+`)
 }
