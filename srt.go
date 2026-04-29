@@ -11,14 +11,14 @@ type SRTExtractor struct{}
 // SRT形式かどうかを判定する
 func (e *SRTExtractor) CanExtract(content string) bool {
 	// SRT形式の特徴: タイムスタンプ行（00:00:00,000 --> 00:00:00,000）が存在する
-	timestampPattern := regexp.MustCompile(`\d{2}:\d{2}:\d{2},\d{3}\s*-->\s*\d{2}:\d{2}:\d{2},\d{3}`)
+	timestampPattern := regexp.MustCompile(`\d+:\d{2}:\d{2},\d{3}\s*-->\s*\d+:\d{2}:\d{2},\d{3}`)
 	return timestampPattern.MatchString(content)
 }
 
 // SRT形式の字幕からテキストを抽出する
 func (e *SRTExtractor) Extract(content string) (string, error) {
 	lines := strings.Split(content, "\n")
-	timestampPattern := regexp.MustCompile(`^\d{2}:\d{2}:\d{2},\d{3}\s*-->\s*\d{2}:\d{2}:\d{2},\d{3}$`)
+	timestampPattern := regexp.MustCompile(`^\d+:\d{2}:\d{2},\d{3}\s*-->\s*\d+:\d{2}:\d{2},\d{3}$`)
 	sequencePattern := regexp.MustCompile(`^\d+$`)
 
 	var textParts []string

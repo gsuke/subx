@@ -61,3 +61,50 @@ func TestDetectAndExtract_Samples(t *testing.T) {
 		})
 	}
 }
+
+func TestDetectAndExtract(t *testing.T) {
+	tests := []struct {
+		name    string
+		content string
+		want    string
+		wantErr bool
+	}{
+		{
+			name:    "BOM除去_ASS",
+			content: "\xef\xbb\xbf[Script Info]\n[Events]\nDialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,テスト",
+			want:    "テスト",
+			wantErr: false,
+		},
+		{
+			name:    "BOM除去_SRT",
+			content: "\xef\xbb\xbf1\n00:00:00,000 --> 00:00:02,000\nテスト\n",
+			want:    "テスト",
+			wantErr: false,
+		},
+		{
+			name:    "未対応形式",
+			content: "これは何かのテキスト\n改行含む\nだが字幕形式ではない",
+			want:    "",
+			wantErr: true,
+		},
+		{
+			name:    "空文字列",
+			content: "",
+			want:    "",
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := DetectAndExtract(tt.content)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("DetectAndExtract() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("DetectAndExtract() = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
