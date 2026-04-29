@@ -55,52 +55,52 @@ func TestASSExtractor_Extract(t *testing.T) {
 	tests := []struct {
 		name    string
 		content string
-		want    string
+		want    []string
 	}{
 		{
 			name:    "通常のDialogue行",
 			content: "Dialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,テスト字幕",
-			want:    "テスト字幕",
+			want:    []string{"テスト字幕"},
 		},
 		{
 			name:    "空のDialogue行",
 			content: "Dialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,",
-			want:    "",
+			want:    nil,
 		},
 		{
 			name:    "ASSタグを含む",
 			content: "Dialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,{\\pos(100,200)}テスト",
-			want:    "テスト",
+			want:    []string{"テスト"},
 		},
 		{
 			name:    "文中に改行コードを含む\\N",
 			content: "Dialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,一行目\\N二行目",
-			want:    "一行目\n二行目",
+			want:    []string{"一行目\n二行目"},
 		},
 		{
 			name:    "末尾に改行コードを含む\\N",
 			content: "Dialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,テスト\\N",
-			want:    "テスト",
+			want:    []string{"テスト"},
 		},
 		{
 			name:    "Dialogue行がない",
 			content: "[Script Info]\n[Events]",
-			want:    "",
+			want:    nil,
 		},
 		{
 			name:    "複数Dialogue行",
 			content: "Dialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,最初の行\nDialogue: 0,0:00:02.00,0:00:04.00,Default,,0,0,0,,次の行",
-			want:    "最初の行\n次の行",
+			want:    []string{"最初の行", "次の行"},
 		},
 		{
 			name:    "フィールド不足_Dialogue行",
 			content: "Dialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0", // 10フィールド未満
-			want:    "",
+			want:    nil,
 		},
 		{
 			name:    "メタデータのみ空文字化",
 			content: "Dialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,{\\fad(100,200)}",
-			want:    "",
+			want:    []string{}, // 空文字列のため追加されない
 		},
 	}
 
@@ -110,8 +110,8 @@ func TestASSExtractor_Extract(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Extract() error = %v", err)
 			}
-			if got != tt.want {
-				t.Errorf("Extract() = %q, want %q", got, tt.want)
+			if !equalStringSlice(got, tt.want) {
+				t.Errorf("Extract() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -93,6 +93,36 @@ func TestDetectAndExtract(t *testing.T) {
 			want:    "",
 			wantErr: true,
 		},
+		{
+			name:    "連続重複_SRT",
+			content: "1\n00:00:01,000 --> 00:00:02,000\nテスト\n\n2\n00:00:02,000 --> 00:00:03,000\nテスト\n",
+			want:    "テスト",
+			wantErr: false,
+		},
+		{
+			name:    "連続重複_ASS",
+			content: "[Script Info]\n[Events]\nDialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,テスト1\nDialogue: 0,0:00:02.00,0:00:04.00,Default,,0,0,0,,テスト1\nDialogue: 0,0:00:04.00,0:00:06.00,Default,,0,0,0,,テスト2",
+			want:    "テスト1\nテスト2",
+			wantErr: false,
+		},
+		{
+			name:    "SRT_重複なし_複数行ブロック",
+			content: "1\n00:00:01,000 --> 00:00:02,000\nブロック1-1\nブロック1-2\n\n2\n00:00:02,000 --> 00:00:03,000\nブロック2\n\n3\n00:00:03,000 --> 00:00:04,000\nブロック3\n",
+			want:    "ブロック1-1\nブロック1-2\nブロック2\nブロック3",
+			wantErr: false,
+		},
+		{
+			name:    "SRT_複数行ブロック重複",
+			content: "1\n00:00:01,000 --> 00:00:02,000\n1行目\n2行目\n\n2\n00:00:02,000 --> 00:00:03,000\n1行目\n2行目\n\n3\n00:00:03,000 --> 00:00:04,000\n異なる\n",
+			want:    "1行目\n2行目\n異なる",
+			wantErr: false,
+		},
+		{
+			name:    "SRT_3ブロック連続重複",
+			content: "1\n00:00:01,000 --> 00:00:02,000\n同じ\n\n2\n00:00:02,000 --> 00:00:03,000\n同じ\n\n3\n00:00:03,000 --> 00:00:04,000\n同じ\n",
+			want:    "同じ",
+			wantErr: false,
+		},
 	}
 
 	for _, tt := range tests {
@@ -107,4 +137,67 @@ func TestDetectAndExtract(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestDeduplicateLines(t *testing.T) {
+	tests := []struct {
+		name  string
+		lines []string
+		want  string
+	}{
+		{
+			name:  "重複なし",
+			lines: []string{"a", "b", "c"},
+			want:  "a\nb\nc",
+		},
+		{
+			name:  "連続重複",
+			lines: []string{"a", "a", "b", "b", "b", "c"},
+			want:  "a\nb\nc",
+		},
+		{
+			name:  "すべて同一",
+			lines: []string{"x", "x", "x"},
+			want:  "x",
+		},
+		{
+			name:  "空スライス",
+			lines: []string{},
+			want:  "",
+		},
+		{
+			name:  "単一要素",
+			lines: []string{"only"},
+			want:  "only",
+		},
+		{
+			name:  "非連続重複は除去しない",
+			lines: []string{"a", "b", "a"},
+			want:  "a\nb\na",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := deduplicateLines(tt.lines)
+			if got != tt.want {
+				t.Errorf("deduplicateLines() = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func equalStringSlice(a, b []string) bool {
+	if len(a) == 0 && len(b) == 0 {
+		return true
+	}
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
 }

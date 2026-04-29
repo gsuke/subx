@@ -16,26 +16,66 @@ func (e *SRTExtractor) CanExtract(content string) bool {
 }
 
 // SRT形式の字幕からテキストを抽出する
-func (e *SRTExtractor) Extract(content string) (string, error) {
+//
+// SRT形式はブロック構造を持つ:
+//
+//	1                   <- シーケンス番号
+//	00:00:01,000 --> 00:00:02,000  <- タイムスタンプ
+//	テキスト1行目        <- テキスト（複数行可）
+//	テキスト2行目
+//
+//	2                   <- 次のブロック開始（空行で区切られる）
+//	00:00:02,000 --> 00:00:03,000
+//	次のテキスト
+//
+// この関数は各ブロックのテキスト行を1つのスライス要素にまとめ、[]stringで返す。
+// ブロック内の複数行はLF(\n)で結合される。
+func (e *SRTExtractor) Extract(content string) ([]string, error) {
 	lines := strings.Split(content, "\n")
-	timestampPattern := regexp.MustCompile(`^\d+:\d{2}:\d{2},\d{3}\s*-->\s*\d+:\d{2}:\d{2},\d{3}$`)
-	sequencePattern := regexp.MustCompile(`^\d+$`)
 
-	var textParts []string
+	var textParts []string   // 抽出したスライス（1ブロック = 1要素）
+	var currentText []string // 現在のブロックで収集中のテキスト行
+
+	// flushText: 現在のブロックのテキストをスライスに追加し、currentTextをクリアする
+	flushText := func() {
+		if len(currentText) == 0 {
+			return
+		}
+		// ブロック内の複数行をLF(\n)で結合して1要素にする
+		textParts = append(textParts, strings.Join(currentText, "\n"))
+		currentText = nil
+	}
+
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 
-		// 空行、シーケンス番号、タイムスタンプ行はスキップ
-		if line == "" || sequencePattern.MatchString(line) || timestampPattern.MatchString(line) {
+		// 空行はブロック境界
+		if line == "" {
+			flushText()
 			continue
 		}
 
-		// ASS形式のメタデータが混入していることがあるので、それを除去
+		// シーケンス番号行（数字のみ）: 新しいブロック開始
+		if matched, _ := regexp.MatchString(`^\d+$`, line); matched {
+			flushText()
+			continue
+		}
+
+		// タイムスタンプ行: 新しいブロック開始
+		if matched, _ := regexp.MatchString(`^\d+:\d{2}:\d{2},\d{3}\s*-->\s*\d+:\d{2}:\d{2},\d{3}$`, line); matched {
+			flushText()
+			continue
+		}
+
+		// ASS形式のメタデータが混入していることがあるので除去
 		line = removeASSMetadata(line)
 
-		// それ以外はテキスト行
-		textParts = append(textParts, line)
+		// テキスト行: 現在のブロックに追加
+		currentText = append(currentText, line)
 	}
 
-	return strings.Join(textParts, "\n"), nil
+	// 最後のブロックをflush
+	flushText()
+
+	return textParts, nil
 }
