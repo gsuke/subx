@@ -117,26 +117,6 @@ func TestASSExtractor_Extract(t *testing.T) {
 	}
 }
 
-// TODO: SRTでも使う共通処理っぽいので、どこかに移動させたい
-func equalStringSlice(a, b []string) bool {
-	// 空スライス(nilも含む)と空スライスを等しいとして扱う
-	if len(a) == 0 && len(b) == 0 {
-		return true
-	}
-	if a == nil || b == nil {
-		return false
-	}
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if a[i] != b[i] {
-			return false
-		}
-	}
-	return true
-}
-
 func TestExtractTextFromDialogue(t *testing.T) {
 	tests := []struct {
 		name string
