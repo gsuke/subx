@@ -101,8 +101,26 @@ func TestDetectAndExtract(t *testing.T) {
 		},
 		{
 			name:    "連続重複_ASS",
-			content: "[Script Info]\n[Events]\nDialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,テスト\nDialogue: 0,0:00:02.00,0:00:04.00,Default,,0,0,0,,テスト\nDialogue: 0,0:00:04.00,0:00:06.00,Default,,0,0,0,,mage",
-			want:    "テスト\nmage",
+			content: "[Script Info]\n[Events]\nDialogue: 0,0:00:00.00,0:00:02.00,Default,,0,0,0,,テスト1\nDialogue: 0,0:00:02.00,0:00:04.00,Default,,0,0,0,,テスト1\nDialogue: 0,0:00:04.00,0:00:06.00,Default,,0,0,0,,テスト2",
+			want:    "テスト1\nテスト2",
+			wantErr: false,
+		},
+		{
+			name:    "SRT_重複なし_複数行ブロック",
+			content: "1\n00:00:01,000 --> 00:00:02,000\nブロック1-1\nブロック1-2\n\n2\n00:00:02,000 --> 00:00:03,000\nブロック2\n\n3\n00:00:03,000 --> 00:00:04,000\nブロック3\n",
+			want:    "ブロック1-1\nブロック1-2\nブロック2\nブロック3",
+			wantErr: false,
+		},
+		{
+			name:    "SRT_複数行ブロック重複",
+			content: "1\n00:00:01,000 --> 00:00:02,000\n1行目\n2行目\n\n2\n00:00:02,000 --> 00:00:03,000\n1行目\n2行目\n\n3\n00:00:03,000 --> 00:00:04,000\n異なる\n",
+			want:    "1行目\n2行目\n異なる",
+			wantErr: false,
+		},
+		{
+			name:    "SRT_3ブロック連続重複",
+			content: "1\n00:00:01,000 --> 00:00:02,000\n同じ\n\n2\n00:00:02,000 --> 00:00:03,000\n同じ\n\n3\n00:00:03,000 --> 00:00:04,000\n同じ\n",
+			want:    "同じ",
 			wantErr: false,
 		},
 	}
