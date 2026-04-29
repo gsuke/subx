@@ -1,12 +1,2 @@
 github.com/spf13/pflag v1.0.10 h1:4EBh2KAYBwaONj6b2Ye1GiHfwjqyROoF4RwYO+vPwFk=
 github.com/spf13/pflag v1.0.10/go.mod h1:McXfInJRrz4CZXVZOBLb0bTZqETkiAhM9Iw0y3An2Bg=
-golang.design/x/clipboard v0.7.1 h1:OEG3CmcYRBNnRwpDp7+uWLiZi3hrMRJpE9JkkkYtz2c=
-golang.design/x/clipboard v0.7.1/go.mod h1:i5SiIqj0wLFw9P/1D7vfILFK0KHMk7ydE72HRrUIgkg=
-golang.org/x/exp/shiny v0.0.0-20260312153236-7ab1446f8b90 h1:kyPrwnEYXdME284bE7xgS9BPxhG7MCa5hw1/TpaTJVs=
-golang.org/x/exp/shiny v0.0.0-20260312153236-7ab1446f8b90/go.mod h1:jqkJFnLVkS8zgKKY4+MOPCZtuZGw3hONUjhapUSwZ8c=
-golang.org/x/image v0.37.0 h1:ZiRjArKI8GwxZOoEtUfhrBtaCN+4b/7709dlT6SSnQA=
-golang.org/x/image v0.37.0/go.mod h1:/3f6vaXC+6CEanU4KJxbcUZyEePbyKbaLoDOe4ehFYY=
-golang.org/x/mobile v0.0.0-20260312152759-81488f6aeb60 h1:MOzyaj0wu2xneBkzkg9LHNYjDBB4W5vP043A2SYQRPA=
-golang.org/x/mobile v0.0.0-20260312152759-81488f6aeb60/go.mod h1:th6VJvzjMbrYF8SduQY5rpD0HG0GleGxjadkqSxFs3k=
-golang.org/x/sys v0.42.0 h1:omrd2nAlyT5ESRdCLYdm3+fMfNFE/+Rf4bDIQImRJeo=
-golang.org/x/sys v0.42.0/go.mod h1:4GL1E5IUh+htKOUEOaiffhrAeqysfVGipDYzABqnCmw=
