@@ -4,8 +4,9 @@
 
 対応形式
 
-* ASS
-* SRT
+* .ass (Advanced SubStation Alpha)
+* .srt (SubRip Text)
+* .vtt (WebVTT)
 
 ## インストール
 

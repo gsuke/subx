@@ -19,6 +19,7 @@ func DetectAndExtract(content string) (string, error) {
 	extractors := []SubtitlesExtractor{
 		&ASSExtractor{},
 		&SRTExtractor{},
+		&VTTExtractor{},
 	}
 
 	for _, extractor := range extractors {
