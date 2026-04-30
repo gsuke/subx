@@ -101,9 +101,9 @@ Examples:
   subx *.srt -o ./extracted
 
 Supported formats:
-  * .ass (Advanced SubStation Alpha)
-  * .srt (SubRip Text)
-  * .vtt (WebVTT)
+  .ass (Advanced SubStation Alpha)
+  .srt (SubRip Text)
+  .vtt (WebVTT)
 
 Description:
   字幕ファイルからテキスト部分のみを抽出します。
